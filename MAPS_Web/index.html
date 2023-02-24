@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Scheduling Practice - MAPS LAB</title>
+	<style>
+		@import url(//fonts.googleapis.com/earlyaccess/nanumgothiccoding.css);
+		body {
+			padding: 32px;
+			font-family: Nanum Gothic Coding;
+			background: rgb(255, 255, 255);
+		}
+		menu {
+			font-family: Nanum Gothic Coding;
+		}
+		header {
+			position: sticky;
+			top: 0;
+			opacity: 0.7;
+			backdrop-filter: blur(30px);
+			font-family: Nanum Gothic Coding;
+			background: rgb(78, 79, 80);
+			color: white;
+			padding-left: 32px; 
+			padding-right: 32px; 
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+		.container {
+			width: 100%;
+			margin: 0 auto;
+		}
+		/* custom class */
+		.gantt .bar-milestone .bar {
+			fill: tomato;
+		}
+	</style>
+	<link rel="stylesheet" href="dist/frappe-gantt.css" />
+	<script src="dist/frappe-gantt.js"></script>
+	<script src="dist/scroll-lock.js"></script>
+</head>
+<body>
+	<header>
+		<h1>스케줄링 실습 페이지</h1>
+		<nav>
+		  <span><a href="#description">설명보기</a></span>
+		</nav>
+	</header>
+	<div>
+        <p>하단의 바를 이동하여 최적의 스케줄을 찾아보세요.</p>
+		<div class="container">
+			<div id="menu">
+				<button id="enable">스크롤 활성화</button>
+				<button id="disable">스크롤 잠금</button>
+				<strong id="status" class="enabled">활성화</strong>
+			</div>
+			<div class="gantt-target"></div>
+		</div>
+		<a name="description"> </a>
+		<p>1. 이 스케줄링 예제에서는 <span style="background-color: rgb(209, 237, 248);"><b>1명의 작업자</b></span>가 모든 작업을 완료해야 하는 상황을 가정합니다. 기본적으로 작업자는 한번에 하나의 작업만을 수행할 수 있습니다.</p>
+		<p>2. 각 작업은 정해진 <span style="background-color: pink;">붉은색 박스로 표현된 납기일</span>과 <span style="background-color: rgb(193, 192, 255);">연보라색 박스로 표현된 작업시간</span>이 존재합니다. 납기일의 경우 작업을 완료해야만 하는 날짜이며, 작업시간은 작업을 완료하기 위해 필요한 표준시간입니다.</p>
+		<p>3. 추가적으로 특정 작업은 <b>작업 순서</b>가 존재합니다. 예를 들면, 본체 성형을 완료해야만 본체 도장을 시작할 수 있으며, 이러한 관계는 화살표로 표현되어 있습니다. 이런 선후행 관계에 따라 막대의 이동 범위도 제한됩니다.</p>
+		<p>4. 이 스케줄링 문제의 목표는 <span style="background-color: rgb(209, 237, 248);"><b>총 납기초과일 + 총 재고보유일의 합</b></span>을 최소화하는 것입니다. 따라서, 처음 주어진 스케줄의 성능은 총 납기초과일 20 + 총 재고보유일 15 = <b>35</b>입니다. 해당 작업의 막대를 클릭하시면 작업 별 납기초과일 및 재고보유일을 확인하실 수 있습니다.</p>
+		<p>5. <span style="background-color: rgb(209, 237, 248);"><b>총 납기초과일</b></span>은 Total Tardiness라고도 불리며, <span style="background-color: pink;">붉은색 박스</span>로 표현된 <b>납기일에서 지연된 정도</b>를 나타냅니다. 예를 들면, 현재 본체 및 부품 조립 공정의 경우 납기를 5일 초과한 상태입니다. </p>
+		<p>6. 반면, <span style="background-color: rgb(209, 237, 248);"><b>총 재고보유일</b></span>은 납기초과일과는 반대로 <span style="background-color: pink;">붉은색 박스</span>로 표현된 <b>납기일보다 일찍 작업을 완료하여 재고로 보유한 정도</b>를 나타냅니다. (재고보유일은 스케줄링 문제에서 Total Earliness라고도 불립니다.) 예를 들면, 현재 부품 가공 공정의 경우 납기보다 일찍 완성되어 재고를 6일동안 보유해야하는 상태입니다. </p>
+		<p>7. 스케줄을 조정하는 과정에서, 1번 조건을 만족하지 않을 수 있습니다. 이 경우 하단의 <span style="color: red;"><b>[정상일정]</b></span>부분이 <span style="color: red;"><b>[중복작업존재-스케줄을 수정하세요!]</b></span>로 바뀌게 되며, 중복된 작업의 경우 붉은 글씨로 강조되게 됩니다. </p>
+		<p>Tip: 기본적으로 모든 작업을 적시에 완료하는 것이 이 문제의 목표입니다. 처음 주어진 스케줄의 성능은 35이며, 작업순서 변경을 통해 이 성능을 대폭 개선할 수 있습니다.</p>
+    </div>
+	
+	<script>
+		var tasks = [
+			{
+				start: '2022-01-01',
+				end: '2022-01-10',
+				name: '본체 성형',
+				id: "1",
+				progress: 100,
+				due: '2022-01-15'
+			},
+			{
+				start: '2022-01-17',
+				end: '2022-01-22',
+				name: '본체 도장',
+				id: "2",
+				progress: 100,
+				dependencies: '1',
+				due: '2022-01-15'
+			},
+			{
+				start: '2022-01-12',
+				end: '2022-01-15',
+				name: '부품 가공',
+				id: "3",
+				progress: 100,
+				due: '2022-01-21'
+			},
+			{
+				start: '2022-01-24',
+				end: '2022-01-29',
+				name: '본체 및 부품 조립',
+				id: "4",
+				progress: 100,
+				dependencies: '2,3',
+				due: '2022-01-24'
+			},
+			{
+				start: '2022-01-30',
+				end: '2022-02-01',
+				name: '품질 검사',
+				id: "5",
+				progress: 100,
+				dependencies: '4',
+				due: '2022-01-29'
+			},
+			{
+				start: '2022-02-02',
+				end: '2022-02-03',
+				name: '서류 작업',
+				id: "6",
+				progress: 100,
+				due: '2022-02-07'
+			},
+			{
+				start: '2022-02-04',
+				end: '2022-02-07',
+				name: '다음 공정으로 이송',
+				id: "7",
+				progress: 100,
+				dependencies: '5',
+				due: '2022-02-03'
+			},
+			{
+				start: '2022-02-08',
+				end: '2022-02-09',
+				name: '서류 작업 2',
+				id: "8",
+				progress: 100,
+				due: '2022-02-08'
+			}
+		]
+		var gantt_chart = new Gantt(".gantt-target", tasks, {
+			on_click: function (task) {
+				console.log(task);
+			},
+			on_date_change: function(task, start, end) {
+				console.log(task, start, end);
+			},
+			on_progress_change: function(task, progress) {
+				console.log(task, progress);
+			},
+			on_view_change: function(mode) {
+				console.log(mode);
+			},
+			view_mode: 'Day',
+			language: 'kr',
+			start_date: '2022-01-01'
+		});
+		
+		console.log(gantt_chart);
+	</script>
+</body>
+</html>

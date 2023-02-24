@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Scheduling Practice - MAPS LAB</title>
+	<style>
+		@import url(//fonts.googleapis.com/earlyaccess/nanumgothiccoding.css);
+		*{font-family: "Nanum Gothic Coding" !important;}
+		
+		body {
+			padding: 32px;
+			font-family: Nanum Gothic Coding;
+			background: rgb(255, 255, 255);
+		}
+		menu {
+			font-family: Nanum Gothic Coding;
+		}
+		header {
+			position: sticky;
+			top: 0;
+			opacity: 0.7;
+			backdrop-filter: blur(30px);
+			font-family: Nanum Gothic Coding;
+			background: rgb(78, 79, 80);
+			color: white;
+			padding-left: 32px; 
+			padding-right: 32px; 
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+		.container {
+			width: 100%;
+			margin: 0 auto;
+		}
+
+		/* custom class */
+		.gantt .bar-milestone .bar {
+			fill: tomato;
+		}
+	</style>
+	<link rel="stylesheet" href="dist/frappe-gantt.css" />
+	<script src="dist/frappe-gantt.js"></script>
+	<script src="dist/decision-tree.js"></script>
+</head>
+<body>
+	<header>
+		<h1>해석가능한 기계학습 기반 일정계획 실습</h1>
+	</header>
+	<div>
+        <p>하단의 바를 이동하여 최적의 스케줄을 찾아보세요. 가능한 스케줄인 경우 차트 하단에 추출된 규칙이 표시됩니다.</p>
+		<a name="description"> </a>
+		<p>1. 이 스케줄링 예제에서는 <span style="background-color: rgb(209, 237, 248);"><b>1명의 작업자</b></span>가 모든 작업을 완료해야 하는 상황을 가정합니다. 기본적으로 작업자는 한번에 하나의 작업만을 수행할 수 있습니다.</p>
+		<p>2. 각 작업은 정해진 <span style="background-color: pink;">붉은색 박스로 표현된 납기일</span>과 <span style="background-color: rgb(193, 192, 255);">연보라색 박스로 표현된 작업시간</span>이 존재합니다. 납기일의 경우 작업을 완료해야만 하는 날짜이며, 작업시간은 작업을 완료하기 위해 필요한 표준시간입니다.</p>
+		<p>4. 이 스케줄링 문제의 목표는 <span style="background-color: rgb(209, 237, 248);"><b>총 납기초과일(Total Tardiness)</b></span>을 최소화하는 것입니다. 해당 작업의 막대를 클릭하시면 작업 별 납기초과일을 확인하실 수 있습니다.</p>
+		<p>7. 스케줄을 조정하는 과정에서, 1번 조건을 만족하지 않을 수 있습니다. 이 경우 하단의 <span style="color: red;"><b>[정상일정]</b></span>부분이 <span style="color: red;"><b>[중복작업존재-스케줄을 수정하세요!]</b></span>로 바뀌게 되며, 중복된 작업의 경우 붉은 글씨로 강조되게 됩니다. </p>
+		<div class="container">
+			<div id="menu">
+				<button id="enable">스크롤 활성화</button>
+				<button id="disable">스크롤 잠금</button>
+				<strong id="status" class="enabled">활성화</strong>
+			</div>
+			<div class="gantt-target"></div>
+		</div>
+		
+    </div>
+
+	<div class="tree" id="displayTree"></div>
+	
+	<script>
+		var tasks = [
+			{
+				start: '2022-01-01',
+				end: '2022-01-04',
+				name: 'Job 1',
+				id: "1",
+				progress: 100,
+				due: '2022-01-05'
+			},
+			{
+				start: '2022-01-05',
+				end: '2022-01-12',
+				name: 'Job 2',
+				id: "2",
+				progress: 100,
+				due: '2022-01-10'
+			},
+			{
+				start: '2022-01-13',
+				end: '2022-01-18',
+				name: 'Job 3',
+				id: "3",
+				progress: 100,
+				due: '2022-01-15'
+			},
+			{
+				start: '2022-01-19',
+				end: '2022-01-21',
+				name: 'Job 4',
+				id: "4",
+				progress: 100,
+				due: '2022-01-06'
+			}
+		]
+		var gantt_chart = new Gantt(".gantt-target", tasks, {
+			on_click: function (task) {
+				console.log(task);
+			},
+			on_date_change: function(task, start, end) {
+				console.log(task, start, end);
+			},
+			on_progress_change: function(task, progress) {
+				console.log(task, progress);
+			},
+			on_view_change: function(mode) {
+				console.log(mode);
+			},
+			view_mode: 'Day',
+			language: 'kr',
+			start_date: '2022-01-01',
+			end_date: '2022-03-01'
+		});
+		
+		console.log(gantt_chart);
+	</script>
+</body>
+</html>

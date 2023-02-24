@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Scheduling Practice - MAPS LAB</title>
+	<style>
+		@import url(//fonts.googleapis.com/earlyaccess/nanumgothiccoding.css);
+		*{font-family: "Nanum Gothic Coding" !important;}
+		
+		body {
+			padding: 32px;
+			font-family: Nanum Gothic Coding;
+			background: rgb(255, 255, 255);
+		}
+		menu {
+			font-family: Nanum Gothic Coding;
+		}
+		header {
+			position: sticky;
+			top: 0;
+			opacity: 0.7;
+			backdrop-filter: blur(30px);
+			font-family: Nanum Gothic Coding;
+			background: rgb(78, 79, 80);
+			color: white;
+			padding-left: 32px; 
+			padding-right: 32px; 
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+		.container {
+			width: 100%;
+			margin: 0 auto;
+		}
+
+		/* custom class */
+		.gantt .bar-milestone .bar {
+			fill: tomato;
+		}
+	</style>
+	<link rel="stylesheet" href="dist/frappe-gantt.css" />
+	<link rel="shortcut icon" type="image/png" href="icon.png"/>
+	<script src="dist/frappe-gantt.js"></script>
+	<script src="dist/decision-tree.js"></script>
+</head>
+<body>
+	<header>
+		<h1>Scheduling Example with Interpretable Machine Learning</h1>
+	</header>
+	<div>
+        <p>Try moving the tasks below to find a feasible (or the best) schedule. If the schedule is feasible, hidden rules as a form of a decision tree are retrieved automatically. </p>
+		<p>[1] In this problem instance, let's assume that there is <span style="background-color: rgb(209, 237, 248);"><b>a single machine (or worker)</b></span> on the shop floor. Basically, the machine can produce a task at a time.</p>
+		<p>[2] Each task has <span style="background-color: pink;">a due date</span> and <span style="background-color: rgb(193, 192, 255);">a processing time</span>. The due date represents the time that the task has to be completed.</p>
+		<p>[3] The objective(s) can take many different forms. In this problem, the <span style="background-color: rgb(209, 237, 248);"><b>total tardiness</b></span> of a schedule is calculated automatically. The total tardiness is the sum of tardiness, which is defined as a positive difference between the completion time and due date.</p>
+		<p>[4] In the schedule-modifying process, [1] can be violated. In this case, at the bottom of the gantt chart, <span style="color: red;"><b>[FEASIBLE]</b></span> is changed to <span style="color: red;"><b>[INFEASIBLE]</b></span> and ovelapped tasks are highlighted in red.</p>
+		<div class="container">
+			<div id="menu">
+				<button id="enable">Scroll Active</button>
+				<button id="disable">Scroll Lock</button>
+				<strong id="status" class="enabled">Active</strong>
+			</div>
+			<div class="gantt-target"></div>
+		</div>
+		
+    </div>
+
+	<div class="tree" id="displayTree"></div>
+	
+	<script>
+		var tasks = [
+			{
+				start: '2022-01-01',
+				end: '2022-01-04',
+				name: 'Job 1',
+				id: "1",
+				progress: 100,
+				due: '2022-01-05'
+			},
+			{
+				start: '2022-01-05',
+				end: '2022-01-12',
+				name: 'Job 2',
+				id: "2",
+				progress: 100,
+				due: '2022-01-10'
+			},
+			{
+				start: '2022-01-13',
+				end: '2022-01-18',
+				name: 'Job 3',
+				id: "3",
+				progress: 100,
+				due: '2022-01-15'
+			},
+			{
+				start: '2022-01-19',
+				end: '2022-01-21',
+				name: 'Job 4',
+				id: "4",
+				progress: 100,
+				due: '2022-01-06'
+			}
+		]
+		var gantt_chart = new Gantt(".gantt-target", tasks, {
+			on_click: function (task) {
+				console.log(task);
+			},
+			on_date_change: function(task, start, end) {
+				console.log(task, start, end);
+			},
+			on_progress_change: function(task, progress) {
+				console.log(task, progress);
+			},
+			on_view_change: function(mode) {
+				console.log(mode);
+			},
+			view_mode: 'Day',
+			language: 'en',
+			start_date: '2022-01-01',
+			end_date: '2022-03-01'
+		});
+		
+		console.log(gantt_chart);
+	</script>
+</body>
+</html>

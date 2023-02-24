@@ -1,0 +1,326 @@
+@import url(//fonts.googleapis.com/earlyaccess/nanumgothiccoding.css);
+@import url(//fonts.googleapis.com/earlyaccess/nanumbrushscript.css);
+
+.gantt .grid-background {
+  fill: none;
+}
+
+.gantt .grid-header {
+  fill: #ffffff;
+  stroke: #e0e0e0;
+  stroke-width: 1.4;
+}
+
+.gantt .grid-row {
+  fill: #ffffff;
+}
+
+.gantt .grid-row:nth-child(even) {
+  fill: #f5f5f5;
+}
+
+.gantt .row-line {
+  stroke: #ebeff2;
+}
+
+.gantt .summary-row {
+  fill: #ffffff;
+}
+
+.gantt .summary-line {
+  stroke: #ffffff;
+  stroke-width: 1.0;
+}
+
+.gantt .tick {
+  stroke: #e0e0e0;
+  stroke-width: 0.2;
+}
+
+.gantt .tick.thick {
+  stroke-width: 0.4;
+}
+
+.gantt .due-highlight {
+  fill: #e78080;
+  opacity: 0.3;
+}
+
+.gantt .arrow {
+  fill: none;
+  stroke: #666;
+  stroke-width: 1.4;
+}
+
+.gantt .bar {
+  fill: #b8c2cc;
+  stroke: #8D99A6;
+  stroke-width: 0;
+  transition: stroke-width .3s ease;
+  font-family: Nanum Gothic Coding;
+  user-select: none;
+}
+
+.gantt .bar-progress {
+  fill: #a3a3ff;
+}
+
+.gantt .bar-invalid {
+  fill: transparent;
+  stroke: #d44848;
+  stroke-width: 1;
+  stroke-dasharray: 5;
+}
+
+.gantt .bar-invalid~.bar-label {
+  fill: rgb(185, 37, 37);
+}
+
+.gantt .bar-label {
+  fill: #fff;
+  dominant-baseline: central;
+  text-anchor: middle;
+  font-size: 12px;
+  font-weight: lighter;
+}
+
+.gantt .bar-label.big {
+  fill: #555;
+  text-anchor: start;
+}
+
+.gantt .handle {
+  fill: #ddd;
+  cursor: ew-resize;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .3s ease;
+}
+
+.gantt .bar-wrapper {
+  cursor: pointer;
+  outline: none;
+}
+
+.gantt .bar-wrapper:hover .bar {
+  fill: #a9b5c1;
+}
+
+.gantt .bar-wrapper:hover .bar-progress {
+  fill: #8a8aff;
+}
+
+.gantt .bar-wrapper:hover .handle {
+  visibility: visible;
+  opacity: 1;
+}
+
+.gantt .bar-wrapper.active .bar {
+  fill: #a9b5c1;
+}
+
+.gantt .bar-wrapper.active .bar-progress {
+  fill: #8a8aff;
+}
+
+.gantt .lower-text, .gantt .upper-text {
+  font-size: 12px;
+  text-anchor: middle;
+}
+
+.gantt .upper-text {
+  fill: #555;
+}
+
+.gantt .lower-text {
+  fill: #333;
+}
+
+.gantt .score-text {
+  fill: rgb(179, 11, 11);
+  font-size: 20px;
+}
+
+.gantt .hide {
+  display: none;
+}
+
+.gantt-container {
+  justify-content: center;
+  position: relative;
+  overflow: auto;
+  font-size: 12px;
+}
+
+.gantt-container .popup-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 0;
+  color: #959da5;
+  border-radius: 3px;
+}
+
+.gantt-container .popup-wrapper .title {
+  border-bottom: 3px solid #a3a3ff;
+  padding: 10px;
+}
+
+.gantt-container .popup-wrapper .subtitle {
+  padding: 10px;
+  color: #dfe2e5;
+}
+
+.gantt-container .popup-wrapper .pointer {
+  position: absolute;
+  height: 5px;
+  margin: 0 0 0 -5px;
+  border: 5px solid transparent;
+  border-top-color: rgba(0, 0, 0, 0.8);
+}
+
+.tree {
+  display: flex;
+  justify-content: center;
+  background-color: rgba(209, 219, 223, 0.185);
+}
+
+.tree ul {
+  margin: 0;
+  padding: 0;
+  padding-top: 20px;
+  position: relative;
+  transition: all 0.5s;
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+}
+
+.tree li {
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+  float: left;
+  text-align: center;
+  list-style-type: none;
+  position: relative;
+  padding: 20px 5px 0 5px;
+  transition: all 0.5s;
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+}
+
+/*We will use ::before and ::after to draw the connectors*/
+
+.tree li::before, .tree li::after {
+  margin: 0;
+  padding: 0;
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 50%;
+  border-top: 1px solid #ccc;
+  width: 50%;
+  height: 20px;
+}
+
+.tree li::after {
+  margin: 0;
+  padding: 0;
+  right: auto;
+  left: 50%;
+  border-left: 1px solid #ccc;
+}
+
+/*We need to remove left-right connectors from elements without
+     any siblings*/
+
+.tree li:only-child::after, .tree li:only-child::before {
+  margin: 0;
+  padding: 0;
+  display: none;
+}
+
+/*Remove space from the top of single children*/
+
+.tree li:only-child {
+  margin: 0;
+  padding: 0;
+  padding-top: 0;
+}
+
+/*Remove left connector from first child and
+     right connector from last child*/
+
+.tree li:first-child::before, .tree li:last-child::after {
+  margin: 0;
+  padding: 0;
+  border: 0 none;
+}
+
+/*Adding back the vertical connector to the last nodes*/
+
+.tree li:last-child::before {
+  margin: 0;
+  padding: 0;
+  border-right: 1px solid #ccc;
+  border-radius: 0 5px 0 0;
+  -webkit-border-radius: 0 5px 0 0;
+  -moz-border-radius: 0 5px 0 0;
+}
+
+.tree li:first-child::after {
+  margin: 0;
+  padding: 0;
+  border-radius: 5px 0 0 0;
+  -webkit-border-radius: 5px 0 0 0;
+  -moz-border-radius: 5px 0 0 0;
+}
+
+/*Time to add downward connectors from parents*/
+
+.tree ul ul::before {
+  margin: 0;
+  padding: 0;
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  border-left: 1px solid #ccc;
+  width: 0;
+  height: 20px;
+}
+
+.tree li a {
+  margin: 0;
+  padding: 0;
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  text-decoration: none;
+  color: #666;
+  font-family: arial, verdana, tahoma;
+  font-size: 11px;
+  display: inline-block;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  transition: all 0.5s;
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+}
+
+/*Time for some hover effects*/
+
+/*We will apply the hover effect the the lineage of the element also*/
+
+.tree li a:hover, .tree li a:hover+ul li a {
+  background: #c8e4f8;
+  color: #000;
+  border: 1px solid #94a0b4;
+}
+
+/*Connector styles on hover*/
+
+.tree li a:hover+ul li::after, .tree li a:hover+ul li::before, .tree li a:hover+ul::before, .tree li a:hover+ul ul::before {
+  border-color: #94a0b4;
+}

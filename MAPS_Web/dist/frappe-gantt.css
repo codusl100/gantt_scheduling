@@ -83,6 +83,7 @@
 .TASK8 g rect {
   fill : #A390EE !important;
 }
+
 .gantt .bar-invalid {
   fill: transparent;
   stroke: #d44848;

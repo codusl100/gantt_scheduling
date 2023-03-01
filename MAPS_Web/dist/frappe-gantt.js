@@ -2289,45 +2289,6 @@ function enableScroll() {
   window.removeEventListener('keydown', preventDefaultForScrollKeys, false);
 }
 
-// const barblock = document.querySelector('.bar-progress')
-
-// barblock.addEventListener('dragstart', dragStart);
-
-// barblock.forEach(block => {
-//     block.addEventListener('dragenter', dragEnter)
-//     block.addEventListener('dragover', dragOver);
-//     block.addEventListener('dragleave', dragLeave);
-//     block.addEventListener('drop', drop);
-// });
-
-// function dragStart(e) {
-//      console.log("drag start..");
-// }
-
-// function dragEnter(e) {
-//     e.preventDefault();
-//     e.target.classList.add('drag-over');
-// }
-
-// function dragOver(e) {
-//     e.preventDefault();
-//     e.target.classList.add('drag-over');
-// }
-
-// function dragLeave(e) {
-//     e.target.classList.remove('drag-over');
-// }
-
-// function drop(e) {
-//     e.target.classList.remove('drag-over');
-
-//     const id = e.dataTransfer.getData('text/plain');
-//     const draggable = document.getElementById(id);
-
-//     e.target.appendChild(draggable);
-
-// }
-
 return Gantt;
 
 }());

@@ -84,14 +84,6 @@
   fill : #A390EE !important;
 }
 
-.dropzone {
-  width: 200px;
-  height: 80px;
-  background: lightgray;
-  margin: 10px;
-  padding: 10px;
-}
-
 .gantt .bar-invalid {
   fill: transparent;
   stroke: #d44848;

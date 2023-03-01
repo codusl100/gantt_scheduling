@@ -661,6 +661,7 @@ class Bar {
             this.show_popup();
             this.gantt.unselect_all();
             this.group.classList.add('active');
+            this.drg = true; // drag edit point
         });
 
         $.on(this.group, 'dblclick', e => {
@@ -1536,7 +1537,11 @@ class Gantt {
                 }
             }
         }
-        if (overlap) {overlap = '[중복작업존재-스케줄을 수정하세요!] ';} else {overlap = '[정상일정] ';}
+        if (this.drg) {
+            overlap = '[수정중] ';
+        } else {
+            if (overlap) {overlap = '[중복작업존재-스케줄을 수정하세요!] ';} else {overlap = '[정상일정] ';}
+        }
         document.getElementById('score').textContent = overlap + "총 납기초과일: " + tardiness.reduce((a, b) => a + b, 0) + ", 총 재고보유일: " + earliness.reduce((a, b) => a + b, 0);
     }
 
@@ -1853,6 +1858,7 @@ class Gantt {
             }
 
             bar_wrapper.classList.add('active');
+            this.drg = true; // drag edit point
 
             x_on_start = e.offsetX;
             y_on_start = e.offsetY;
@@ -1927,6 +1933,7 @@ class Gantt {
                 bars.forEach(bar => bar.group.classList.remove('active'));
             }
 
+            this.drg = false; // drag edit finish point
             is_dragging = false;
             is_resizing_left = false;
             is_resizing_right = false;
@@ -1963,6 +1970,7 @@ class Gantt {
             }
 
             bar_wrapper.classList.add('active');
+            this.drg = true; // drag edit point
 
             var rect = e.target.getBoundingClientRect();
             x_on_start = e.targetTouches[0].pageX - rect.left;
@@ -2021,7 +2029,8 @@ class Gantt {
             if (is_dragging || is_resizing_left || is_resizing_right) {
                 bars.forEach(bar => bar.group.classList.remove('active'));
             }
-
+            
+            this.drg = false; // drag edit finish point
             is_dragging = false;
             is_resizing_left = false;
             is_resizing_right = false;

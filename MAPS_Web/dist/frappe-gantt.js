@@ -661,8 +661,9 @@ class Bar {
             this.show_popup();
             this.gantt.unselect_all();
             this.group.classList.add('active');
-            this.drg = true; // drag edit point
+            this.drg = true; // drag edit point 
         });
+
 
         $.on(this.group, 'dblclick', e => {
             if (this.action_completed) {
@@ -1860,6 +1861,7 @@ class Gantt {
             bar_wrapper.classList.add('active');
             this.drg = true; // drag edit point
 
+
             x_on_start = e.offsetX;
             y_on_start = e.offsetY;
 
@@ -2029,7 +2031,7 @@ class Gantt {
             if (is_dragging || is_resizing_left || is_resizing_right) {
                 bars.forEach(bar => bar.group.classList.remove('active'));
             }
-            
+
             this.drg = false; // drag edit finish point
             is_dragging = false;
             is_resizing_left = false;

@@ -52,6 +52,37 @@
 .gantt .bar-progress {
   fill: #a3a3ff; }
 
+.TASK1 g rect {
+  fill : #f4e116 !important;
+}
+
+.TASK2 g rect {
+  fill : #37bcc8 !important;
+}
+
+.TASK3 g rect {
+  fill : #4dd356 !important;
+}
+
+.TASK4 g rect {
+  fill : #d67bd0 !important;
+}
+
+.TASK5 g rect {
+  fill : #9090f1 !important;
+}
+
+.TASK6 g rect {
+  fill : #f1af90 !important;
+}
+
+.TASK7 g rect {
+  fill : #46D2D2 !important;
+}
+
+.TASK8 g rect {
+  fill : #A390EE !important;
+}
 .gantt .bar-invalid {
   fill: transparent;
   stroke: #d44848;

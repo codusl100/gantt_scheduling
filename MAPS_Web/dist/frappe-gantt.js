@@ -601,7 +601,7 @@ class Bar {
 
         const bar = this.$bar;
         // [SJUN] Disable Resizing
-        const handle_width = 0;
+        const handle_width = 5;
 
         createSVG('rect', {
             x: bar.getX() + bar.getWidth() - 9,
@@ -1541,7 +1541,7 @@ class Gantt {
         if (this.drg) {
             overlap = '[수정중] ';
         } else {
-            if (overlap) {overlap = '[중복작업존재-스케줄을 수정하세요!] ';} else {overlap = '[정상일정] ';}
+            if (overlap) {overlap = '[중복작업존재-스케줄을 수정하세요!] ';} else {overlap = '[정상일정] 총점: '+ parseInt(parseInt(tardiness.reduce((a, b) => a + b, 0)) + parseInt(earliness.reduce((a, b) => a + b, 0))) + ' | ';}
         }
         document.getElementById('score').textContent = overlap + "총 납기초과일: " + tardiness.reduce((a, b) => a + b, 0) + ", 총 재고보유일: " + earliness.reduce((a, b) => a + b, 0);
     }

@@ -543,6 +543,7 @@ class Bar {
     }
 
     draw() {
+        this.draw_number();
         this.draw_bar();
         this.draw_progress_bar();
         this.draw_label();
@@ -596,12 +597,23 @@ class Bar {
         requestAnimationFrame(() => this.update_label_position());
     }
 
+    // Add grid line number
+    draw_number() {
+        createSVG('text', {
+            x: 15,
+            y: this.y + this.height / 2,
+            innerHTML: this.task.id,
+            class: 'process-num',
+            append_to: this.bar_group
+        });
+    }
+
     draw_resize_handles() {
         if (this.invalid) return;
 
         const bar = this.$bar;
         // [SJUN] Disable Resizing
-        const handle_width = 5;
+        const handle_width = 0;
 
         createSVG('rect', {
             x: bar.getX() + bar.getWidth() - 9,
@@ -1453,7 +1465,7 @@ class Gantt {
         let row_y = this.options.header_height + this.options.padding / 2;
 
         for (let task of this.tasks) {
-            createSVG('rect', {
+            const grid_row = createSVG('rect', {
                 x: 0,
                 y: row_y,
                 width: row_width,
@@ -1541,7 +1553,9 @@ class Gantt {
         if (this.drg) {
             overlap = '[수정중] ';
         } else {
-            if (overlap) {overlap = '[중복작업존재-스케줄을 수정하세요!] ';} else {overlap = '[정상일정] 총점: '+ parseInt(parseInt(tardiness.reduce((a, b) => a + b, 0)) + parseInt(earliness.reduce((a, b) => a + b, 0))) + ' | ';}
+            if (overlap) {overlap = '[중복작업존재-스케줄을 수정하세요!] ';} 
+            else {overlap = '[정상일정] 총점: '
+                + parseInt(parseInt(tardiness.reduce((a, b) => a + b, 0)) + parseInt(earliness.reduce((a, b) => a + b, 0))) + ' | ';}
         }
         document.getElementById('score').textContent = overlap + "총 납기초과일: " + tardiness.reduce((a, b) => a + b, 0) + ", 총 재고보유일: " + earliness.reduce((a, b) => a + b, 0);
     }

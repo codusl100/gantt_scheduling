@@ -113,9 +113,9 @@
   outline: none; }
 
 /* add  opacity */
-/* .gantt .bar-wrapper:hover .bar {
+.gantt .bar-wrapper:hover .bar {
   fill: #a9b5c1;
-  fill-opacity: 0.3; } */
+  fill-opacity: 0.3; }
 .gantt .bar-wrapper:hover .bar-progress {
   /* fill: #8a8aff;  */
   fill-opacity: 0.3; }
@@ -125,9 +125,9 @@
   opacity: 1; }
 
 /* add opacity */
-/* .gantt .bar-wrapper.active .bar {
+.gantt .bar-wrapper.active .bar {
   fill: #a9b5c1; 
-  fill-opacity: 0.3; } */
+  fill-opacity: 0.3; }
 .gantt .bar-wrapper.active .bar-progress {
   /* fill: #8a8aff;  */
   fill-opacity: 0.3; }

@@ -601,7 +601,7 @@ class Bar {
 
         const bar = this.$bar;
         // [SJUN] Disable Resizing
-        const handle_width = 5;
+        const handle_width = 0;
 
         createSVG('rect', {
             x: bar.getX() + bar.getWidth() - 9,
@@ -725,6 +725,13 @@ class Bar {
     }
 
     update_bar_position({ x = null, width = null }) {
+
+        // fix progress bar bug
+        this.update_label_position();
+        this.update_handle_position();
+        this.update_progressbar_position();
+        this.update_arrow_position();
+
         const bar = this.$bar;
         if (x) {
             if (x<0) {
@@ -780,10 +787,7 @@ class Bar {
         if (width && width >= this.gantt.options.column_width) {
             this.update_attr(bar, 'width', width);
         }
-        this.update_label_position();
-        this.update_handle_position();
-        this.update_progressbar_position();
-        this.update_arrow_position();
+        
     }
 
     date_changed() {

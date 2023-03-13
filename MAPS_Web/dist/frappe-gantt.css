@@ -12,6 +12,12 @@
 .gantt .grid-row {
   fill: #ffffff; }
 
+.gantt .process-num {
+  text-align: center;
+  color: #f5f5f5ad;
+  font-size: 15px;
+}
+
 .gantt .grid-row:nth-child(even) {
   fill: #f5f5f5; }
 

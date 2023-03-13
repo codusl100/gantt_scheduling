@@ -549,6 +549,7 @@ class Bar {
     }
 
     draw() {
+        this.draw_number();
         this.draw_bar();
         this.draw_progress_bar();
         this.draw_label();
@@ -600,6 +601,17 @@ class Bar {
         });
         // labels get BBox in the next tick
         requestAnimationFrame(() => this.update_label_position());
+    }
+
+    // Add grid line number
+    draw_number() {
+        createSVG('text', {
+            x: 15,
+            y: this.y + this.height / 2,
+            innerHTML: this.task.id,
+            class: 'process-num',
+            append_to: this.bar_group
+        });
     }
 
     draw_resize_handles() {
@@ -693,6 +705,7 @@ class Bar {
             this.drg = true; // drag edit point 
         });
 
+
         $.on(this.group, 'dblclick', e => {
             if (this.action_completed) {
                 // just finished a move action, wait for a few seconds
@@ -751,7 +764,14 @@ class Bar {
         });
     }
 
-    update_bar_position({ x = null, y = null, width = null, height = null }) {
+    update_bar_position({ x = null, width = null }) {
+
+        // fix progress bar bug
+        this.update_label_position();
+        this.update_handle_position();
+        this.update_progressbar_position();
+        this.update_arrow_position();
+
         const bar = this.$bar;
         if (x) {
             if (x<0) {
@@ -807,66 +827,7 @@ class Bar {
         if (width && width >= this.gantt.options.column_width) {
             this.update_attr(bar, 'width', width);
         }
-
-        if (y) {
-            if (y<0) {
-                y=0;
-                this.update_attr(bar, 'y', y);
-                return;
-            }
-            // get all y values of parent task
-            // [SJUN] Update Startable Time
-            const ys = this.task.dependencies.map(dep => {
-                return this.gantt.get_bar(dep).$bar.getY() + this.gantt.get_bar(dep).$bar.getHeight();
-            });
-            // child task must not go before parent
-            const valid_y = ys.every(function (e) {
-                return y >= e;
-            });
-
-        //     var all_ys = tasks.map(otask => {
-        //         if (this.task.id != otask.id){return this.gantt.get_bar(otask.id).$bar.getY();}
-        //     });
-        //     all_ys = all_ys.filter(function(y) {
-        //         return y !== undefined;
-        //    });
-
-        //     var all_ye = tasks.map(otask => {
-        //         if (this.task.id != otask.id){return this.gantt.get_bar(otask.id).$bar.getY()+this.gantt.get_bar(otask.id).$bar.getHeight();}
-        //     });
-        //     all_ye = all_ye.filter(function(y) {
-        //         return y !== undefined;
-        //    });
-
-        //    var overlap = false;
-        //    for (let i = 0; i < all_ys.length; i++){
-        //     var start_check = (all_ys[i]<y) && (all_ye[i]>y);
-        //     var end_check = (all_ys[i]<y+bar.getHeight()) && (all_ye[i]>y+bar.getHeight());
-        //     if (start_check || end_check) overlap = true;
-        //    }
-        //    for (let i = 0; i < all_ys.length; i++){
-        //     if (all_ys[i] <= y && all_ye[i] >= y+bar.getHeight()) overlap = true;
-        //    }
-
-            if (!valid_y) {
-                height = null;
-                return;
-            }
-            // [SJUN] TODO: if possible, suggest another position
-            if (overlap) {
-                height = null;
-                return;
-            }
-            this.update_attr(bar, 'y', y); // 적용안되면 손보기기
-            return;
-        }
-        // if (height && height >= this.gantt.options.column_height) {
-        //     this.update_attr(bar, 'height', height);
-        // }
-        this.update_label_position();
-        this.update_handle_position();
-        this.update_progressbar_position();
-        this.update_arrow_position();
+        
     }
 
     date_changed() {
@@ -1554,7 +1515,7 @@ class Gantt {
         let row_y = this.options.header_height + this.options.padding / 2;
 
         for (let task of this.tasks) {
-            createSVG('rect', {
+            const grid_row = createSVG('rect', {
                 x: 0,
                 y: row_y,
                 width: row_width,
@@ -1642,7 +1603,9 @@ class Gantt {
         if (this.drg) {
             overlap = '[수정중] ';
         } else {
-            if (overlap) {overlap = '[중복작업존재-스케줄을 수정하세요!] ';} else {overlap = '[정상일정] ';}
+            if (overlap) {overlap = '[중복작업존재-스케줄을 수정하세요!] ';} 
+            else {overlap = '[정상일정] 총점: '
+                + parseInt(parseInt(tardiness.reduce((a, b) => a + b, 0)) + parseInt(earliness.reduce((a, b) => a + b, 0))) + ' | ';}
         }
         document.getElementById('score').textContent = overlap + "총 납기초과일: " + tardiness.reduce((a, b) => a + b, 0) + ", 총 재고보유일: " + earliness.reduce((a, b) => a + b, 0);
     }
@@ -1966,7 +1929,8 @@ class Gantt {
             }
 
             bar_wrapper.classList.add('active');
-            this.drg = true; // drag edit point 
+            this.drg = true; // drag edit point
+
 
             x_on_start = e.offsetX;
             y_on_start = e.offsetY;
@@ -2066,6 +2030,7 @@ class Gantt {
                 }
             }
             this.drg = false; // drag edit finish point 
+            
             is_dragging = false;
             is_resizing_left = false;
             is_resizing_right = false;
@@ -2108,7 +2073,7 @@ class Gantt {
             }
 
             bar_wrapper.classList.add('active');
-            this.drg = true; // drag edit point 
+            this.drg = true; // drag edit point
 
             var rect = e.target.getBoundingClientRect();
             x_on_start = e.targetTouches[0].pageX - rect.left;

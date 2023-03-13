@@ -56,6 +56,11 @@
 				<strong id="status" class="enabled">활성화</strong>
 			</div>
 			<div class="gantt-target"></div>
+			<div class="bar-block">
+				<h3>bar block</h3>
+				<ul class = "bar">
+				</ul>
+			</div>
 		</div>
 		<a name="description"> </a>
 		<p>1. 이 스케줄링 예제에서는 <span style="background-color: rgb(209, 237, 248);"><b>1명의 작업자</b></span>가 모든 작업을 완료해야 하는 상황을 가정합니다. 기본적으로 작업자는 한번에 하나의 작업만을 수행할 수 있습니다.</p>
@@ -164,7 +169,8 @@
 			language: 'kr',
 			start_date: '2022-01-01'
 		});
-		
+		// this.fullheight = document.getElementById('container').offsetHeight;
+        // console.log(this.fullheight);
 		console.log(gantt_chart);
 	</script>
 </body>

@@ -365,7 +365,7 @@ function createSVG(tag, attrs) {
 }
 
 function animateSVG(svgElement, attr, from, to) {
-    const animatedSvgElement = getAnimationElement(svgElement, attr, from, to);
+    const animatedSvgElement = getAnimationElement(svgElement, attr, from, to); // bar 이동 (속성 active일 때) 이벤트
 
     if (animatedSvgElement === svgElement) {
         // triggered 2nd time programmatically
@@ -373,7 +373,7 @@ function animateSVG(svgElement, attr, from, to) {
         const event = document.createEvent('HTMLEvents');
         event.initEvent('click', true, true);
         event.eventName = 'click';
-        animatedSvgElement.dispatchEvent(event);
+        animatedSvgElement.dispatchEvent(event); // HTML 클릭 처리 
     }
 }
 
@@ -540,6 +540,12 @@ class Bar {
         SVGElement.prototype.getEndX = function() {
             return this.getX() + this.getWidth();
         };
+        // SVGElement.prototype.getEndY = function() {
+        //     return this.getY() + this.getHeight();
+        // };
+        // SVGElement.prototype.getFullHeight = function() {
+        //     return this.fullheight;
+        // }
     }
 
     draw() {
@@ -614,6 +620,7 @@ class Bar {
         const bar = this.$bar;
         // [SJUN] Disable Resizing
         const handle_width = 0;
+        const handle_height = 0;
 
         createSVG('rect', {
             x: bar.getX() + bar.getWidth() - 9,
@@ -634,6 +641,28 @@ class Bar {
             rx: this.corner_radius,
             ry: this.corner_radius,
             class: 'handle left',
+            append_to: this.handle_group
+        });
+
+        createSVG('rect', {
+            x: bar.getX() + 1,
+            y: bar.getY() + bar.getHeight() + 1,
+            width: this.width - 2,
+            height: handle_height,
+            rx: this.corner_radius,
+            ry: this.corner_radius,
+            class: 'handle top',
+            append_to: this.handle_group
+        });
+
+        createSVG('rect', {
+            x: bar.getX() + 1,
+            y: bar.getY() + bar.getHeight() + 1,
+            width: this.width - 2,
+            height: handle_height,
+            rx: this.corner_radius,
+            ry: this.corner_radius,
+            class: 'handle down',
             append_to: this.handle_group
         });
 
@@ -915,6 +944,18 @@ class Bar {
         return position;
     }
 
+    get_snap_position_y(dy) {
+        let ody = dy,
+            rem,
+            position;
+
+        rem = dy % (this.gantt.options.row_height / 8);
+        position =
+            ody -
+            rem + this.gantt.options.row_height / 8;
+        return position;
+    }
+
     update_attr(element, attr, value) {
         value = +value;
         if (!isNaN(value)) {
@@ -952,6 +993,12 @@ class Bar {
         this.handle_group
             .querySelector('.handle.right')
             .setAttribute('x', bar.getEndX() - 9);
+        this.handle_group
+            .querySelector('.handle.top')
+            .setAttribute('y', bar.getY() + 1);
+        this.handle_group
+            .querySelector('.handle.down')
+            .setAttribute('y', bar.getY() - 1);
         const handle = this.group.querySelector('.handle.progress');
         handle &&
             handle.setAttribute('points', this.get_progress_polygon_points());
@@ -1856,21 +1903,27 @@ class Gantt {
         let y_on_start = 0;
         let is_resizing_left = false;
         let is_resizing_right = false;
+        let is_resizing_top = false;
+        let is_resizing_down = false;
         let parent_bar_id = null;
         let bars = []; // instanceof Bar
         this.bar_being_dragged = null;
 
         function action_in_progress() {
-            return is_dragging || is_resizing_left || is_resizing_right;
+            return is_dragging || is_resizing_left || is_resizing_right || is_resizing_top || is_resizing_down;
         }
 
         $.on(this.$svg, 'mousedown', '.bar-wrapper, .handle', (e, element) => {
             const bar_wrapper = $.closest('.bar-wrapper', element);
-
+            e.target.setAttribute("isDrag", 1);
             if (element.classList.contains('left')) {
                 is_resizing_left = true;
             } else if (element.classList.contains('right')) {
                 is_resizing_right = true;
+            } else if (element.classList.contains('top')) {
+                is_resizing_top = true;
+            } else if (element.classList.contains('down')) {
+                is_resizing_down = true;
             } else if (element.classList.contains('bar-wrapper')) {
                 is_dragging = true;
             }
@@ -1896,11 +1949,14 @@ class Gantt {
                 $bar.ox = $bar.getX();
                 $bar.oy = $bar.getY();
                 $bar.owidth = $bar.getWidth();
+                $bar.oheight = $bar.getHeight();
                 $bar.finaldx = 0;
+                $bar.finaldy = 0;
             });
             bars.forEach(bar => {
                 const $bar = bar.$bar;
                 if (!$bar.finaldx) return;
+                if (!$bar.finaldy) return;
                 bar.date_changed();
                 bar.set_action_completed();
             })
@@ -1911,10 +1967,17 @@ class Gantt {
             if (!action_in_progress()) return;
             const dx = e.offsetX - x_on_start;
             const dy = e.offsetY - y_on_start;
+            var ilsDrag = e.target.getAttribute("isDrag");
 
             bars.forEach(bar => {
                 const $bar = bar.$bar;
                 $bar.finaldx = this.get_snap_position(dx);
+                if(ilsDrag) {
+                    ilsDrag = parseInt(ilsDrag);
+                    if(ilsDrag == 1) {
+                        e.target.setAttribute("y", dy);
+                    }
+                }
 
                 if (is_resizing_left) {
                     if (parent_bar_id === bar.task.id) {
@@ -1933,6 +1996,12 @@ class Gantt {
                             width: $bar.owidth + $bar.finaldx
                         });
                     }
+                } else if (is_resizing_top) {
+                    bar.update_bar_position({ y: $bar.oy + $bar.finaldy });
+                } else if (is_resizing_down) {
+                    bar.update_bar_position({ 
+                        y: $bar.oy + $bar.finaldy 
+                    });
                 } else if (is_dragging) {
                     bar.update_bar_position({ x: $bar.ox + $bar.finaldx });
                 }
@@ -1948,14 +2017,25 @@ class Gantt {
         });
 
         document.addEventListener('mouseup', e => {
-            if (is_dragging || is_resizing_left || is_resizing_right) {
+            if (is_dragging || is_resizing_left || is_resizing_right || is_resizing_top || is_resizing_down) {
                 bars.forEach(bar => bar.group.classList.remove('active'));
             }
-
-            this.drg = false; // drag edit finish point
+            
+            var ilsDrag = e.target.getAttribute("isDrag");
+            if(ilsDrag) {
+                ilsDrag = parseInt(ilsDrag);
+                if(ilsDrag == 1) {
+                    e.target.setAttribute("y", dy);
+                    e.target.setAttribute("isDrag", 0);
+                }
+            }
+            this.drg = false; // drag edit finish point 
+            
             is_dragging = false;
             is_resizing_left = false;
             is_resizing_right = false;
+            is_resizing_top = false;
+            is_resizing_down = false;
         });
 
         $.on(this.$svg, 'mouseup', e => {
@@ -1984,6 +2064,10 @@ class Gantt {
                 is_resizing_left = true;
             } else if (element.classList.contains('right')) {
                 is_resizing_right = true;
+            } else if (element.classList.contains('top')) {
+                is_resizing_top = true;
+            } else if (element.classList.contains('down')) {
+                is_resizing_down = true;
             } else if (element.classList.contains('bar-wrapper')) {
                 is_dragging = true;
             }
@@ -2029,10 +2113,14 @@ class Gantt {
 
             bars.forEach(bar => {
                 const $bar = bar.$bar;
-                $bar.finaldx = this.get_snap_position(dx);
+                $bar.finaldx = this.get_snap_position(dx); // 움직이고 나서 bar의 현 위치 x
+                // $bar.finaldy = this.get_snap_position_y(dy);
 
                 if (is_dragging) {
-                    bar.update_bar_position({ x: $bar.ox + $bar.finaldx });
+                    bar.update_bar_position({ 
+                        x: $bar.ox + $bar.finaldx,
+                        y: $bar.oy + $bar.finaldy
+                     });
                 }
             });
             bars.forEach(bar => {
@@ -2045,7 +2133,7 @@ class Gantt {
         });
 
         document.addEventListener('touchend', e => {
-            if (is_dragging || is_resizing_left || is_resizing_right) {
+            if (is_dragging || is_resizing_left || is_resizing_right || is_resizing_top || is_resizing_down) {
                 bars.forEach(bar => bar.group.classList.remove('active'));
             }
 
@@ -2053,6 +2141,8 @@ class Gantt {
             is_dragging = false;
             is_resizing_left = false;
             is_resizing_right = false;
+            is_resizing_top = false;
+            is_resizing_down = false;
         });
 
         $.on(this.$svg, 'touchend', e => {

@@ -588,7 +588,7 @@ var Gantt = (function () {
         draw_label() {
             createSVG('text', {
                 x: this.x + this.width / 2,
-                y: this.y + this.height / 2,
+                y: this.y + this.height / 2 + 3,
                 innerHTML: this.task.name,
                 class: 'bar-label',
                 append_to: this.bar_group
@@ -878,7 +878,7 @@ var Gantt = (function () {
             return (
                 this.gantt.options.header_height +
                 this.gantt.options.padding +
-                this.task._index * (this.height + this.gantt.options.padding)
+                this.task._index * (this.height + this.gantt.options.padding) - 3
             );
         }
     

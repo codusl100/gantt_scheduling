@@ -737,17 +737,14 @@ class Bar {
 
     update_bar_position({ x = null, width = null }) {
 
-        // fix progress bar bug
-        this.update_label_position();
-        this.update_handle_position();
-        this.update_progressbar_position();
-        this.update_arrow_position();
-
         const bar = this.$bar;
+        const bar_progress = this.$bar_progress;
         if (x) {
             if (x<0) {
                 x=0;
                 this.update_attr(bar, 'x', x);
+                // add bar_progress position
+                this.update_attr(bar_progress, 'x', x);
                 return;
             }
             // get all x values of parent task
@@ -797,8 +794,14 @@ class Bar {
         }
         if (width && width >= this.gantt.options.column_width) {
             this.update_attr(bar, 'width', width);
+            // add bar_progress position
+            this.update_attr(bar_progress, 'width', width);
         }
-        
+
+        this.update_label_position();
+        this.update_handle_position();
+        this.update_progressbar_position();
+        this.update_arrow_position();
     }
 
     date_changed() {
@@ -1199,6 +1202,7 @@ class Gantt {
         const default_options = {
             header_height: 50,
             column_width: 30,
+            column_heigth: 20,
             step: 24,
             view_modes: [...Object.values(VIEW_MODE)],
             bar_height: 20,

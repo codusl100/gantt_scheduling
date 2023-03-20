@@ -682,7 +682,6 @@ class Bar {
                 // just finished a move action, wait for a few seconds
                 return;
             }
-
             this.gantt.trigger_event('click', [this.task]);
         });
 
@@ -2130,6 +2129,10 @@ class Gantt {
             bar.progress_changed();
             bar.set_action_completed();
         });
+
+        $.on(this.$svg, 'dblclick', () => {
+            this.popup && this.popup.hide();
+        })
     }
 
     get_all_dependent_tasks(task_id) {

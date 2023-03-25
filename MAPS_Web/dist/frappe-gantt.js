@@ -739,6 +739,8 @@ class Bar {
 
         const bar = this.$bar;
         const bar_progress = this.$bar_progress;
+        const label = this.group.querySelector('.bar_label');
+        
         if (x) {
             if (x<0) {
                 x=0;
@@ -791,6 +793,7 @@ class Bar {
                 return;
             }
             this.update_attr(bar, 'x', x);
+            this.update_attr(bar_progress, 'x', x);
         }
         if (width && width >= this.gantt.options.column_width) {
             this.update_attr(bar, 'width', width);
@@ -800,7 +803,7 @@ class Bar {
 
         this.update_label_position();
         this.update_handle_position();
-        this.update_progressbar_position();
+        // this.update_progressbar_position();
         this.update_arrow_position();
     }
 

@@ -48,7 +48,8 @@
   stroke-width: 1.4; }
 
 .gantt .bar {
-  fill: #b8c2cc;
+  /* fill: #b8c2cc; */
+  background-color: transparent;
   stroke: #8D99A6;
   stroke-width: 0;
   transition: stroke-width .3s ease;

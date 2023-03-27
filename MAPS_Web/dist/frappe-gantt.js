@@ -586,7 +586,7 @@ class Bar {
     }
 
     draw_label() {
-        createSVG('text', {
+        this.$label = createSVG('text', {
             x: this.x + this.width / 2,
             y: this.y + this.height / 2,
             innerHTML: this.task.name,
@@ -739,7 +739,6 @@ class Bar {
 
         const bar = this.$bar;
         const bar_progress = this.$bar_progress;
-        const label = this.group.querySelector('.bar_label');
         
         if (x) {
             if (x<0) {
@@ -747,6 +746,10 @@ class Bar {
                 this.update_attr(bar, 'x', x);
                 // add bar_progress position
                 this.update_attr(bar_progress, 'x', x);
+                // add label position
+                this.update_label_position();
+                // add arrow position
+                this.update_arrow_position();
                 return;
             }
             // get all x values of parent task
@@ -793,18 +796,28 @@ class Bar {
                 return;
             }
             this.update_attr(bar, 'x', x);
+            // add bar_progress position
             this.update_attr(bar_progress, 'x', x);
+            // add label position
+            this.update_label_position();
+            // add arrow position
+            this.update_arrow_position();
+
         }
         if (width && width >= this.gantt.options.column_width) {
             this.update_attr(bar, 'width', width);
             // add bar_progress position
             this.update_attr(bar_progress, 'width', width);
+            // add label position
+            this.update_label_position();
+            // add arrow position
+            this.update_arrow_position();
         }
 
-        this.update_label_position();
+        // this.update_label_position();
         this.update_handle_position();
         // this.update_progressbar_position();
-        this.update_arrow_position();
+        // this.update_arrow_position();
     }
 
     date_changed() {

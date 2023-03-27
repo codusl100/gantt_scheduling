@@ -54,13 +54,16 @@
   stroke-width: 0;
   transition: stroke-width .3s ease;
   font-family: Nanum Gothic Coding;
-  user-select: none; }
+  user-select: none; 
+  height: 26px; }
 
 .gantt .bar-progress {
-  fill: #a3a3ff; }
+  fill: #a3a3ff; 
+  height: 26px; }
 
 .TASK1 g rect {
   fill : #f4e116 !important;
+  height: 26px;
 }
 
 .TASK2 g rect {
@@ -73,6 +76,7 @@
 
 .TASK4 g rect {
   fill : #d67bd0 !important;
+  height: 26px;
 }
 
 .TASK5 g rect {
@@ -94,6 +98,7 @@
 .gantt .bar-invalid {
   fill: transparent;
   stroke: #d44848;
+  height: 26px;
   stroke-width: 1;
   stroke-dasharray: 5; }
   .gantt .bar-invalid ~ .bar-label {
@@ -103,7 +108,7 @@
   fill: #fff;
   dominant-baseline: central;
   text-anchor: middle;
-  font-size: 12px;
+  font-size: 13.5px;
   font-weight: lighter; }
   .gantt .bar-label.big {
     fill: #555;

@@ -1576,34 +1576,35 @@ var Gantt = (function () {
             // 마우스를 작업바 위에 올릴 경우에만 '수정중'이 뜨게 수정
             var bar = document.querySelector('.bar');
             var score_text = '';
+            var overdue_date = parseInt(tardiness.reduce((a, b) => a + b, 0));
+            var hold_date = parseInt(earliness.reduce((a, b) => a + b, 0));
+            var total = overdue_date + hold_date;
 
             if(this.drg) {
                 score_text = '[수정중] ';
 
                 $.on(bar, 'mouseout', event => {
                     if(overlap) score_text = '[중복작업존재-스케줄을 수정하세요!] ';
-                    else score_text = '[정상일정] 총점: '
-                    + parseInt(parseInt(tardiness.reduce((a, b) => a + b, 0)) + parseInt(earliness.reduce((a, b) => a + b, 0))) + ' | ';
-                    document.getElementById('score').textContent = score_text + "총 납기초과일: " + tardiness.reduce((a, b) => a + b, 0) + ", 총 재고보유일: " + earliness.reduce((a, b) => a + b, 0);
+                    else score_text = '[정상일정] 총점: ' + total;
+                    document.getElementById('score').textContent = score_text + "총 납기초과일: " + overdue_date + ", 총 재고보유일: " + hold_date;
                 });
 
             } else {
 
-                if (overlap) {score_text= '[중복작업존재-스케줄을 수정하세요!] ';} 
-                else {score_text = '[정상일정] 총점: '
-                    + parseInt(parseInt(tardiness.reduce((a, b) => a + b, 0)) + parseInt(earliness.reduce((a, b) => a + b, 0))) + ' | ';}
+                if (overlap) score_text= '[중복작업존재-스케줄을 수정하세요!] ';
+                else score_text = '[정상일정] 총점: ' + total;
             }
 
             $.on(bar, 'mousemove', event => {
-                document.getElementById('score').textContent = "[수정중] " + "총 납기초과일: " + tardiness.reduce((a, b) => a + b, 0) + ", 총 재고보유일: " + earliness.reduce((a, b) => a + b, 0);
+                document.getElementById('score').textContent = "[수정중] " + "총 납기초과일: " + overdue_date + ", 총 재고보유일: " + hold_date;
             });
             
             $.on(bar, 'mouseout', event => {
-                document.getElementById('score').textContent = score_text + "총 납기초과일: " + tardiness.reduce((a, b) => a + b, 0) + ", 총 재고보유일: " + earliness.reduce((a, b) => a + b, 0);
+                document.getElementById('score').textContent = score_text + "총 납기초과일: " + overdue_date + ", 총 재고보유일: " + hold_date;
             });
 
-            document.getElementById('score').textContent = score_text + "총 납기초과일: " + tardiness.reduce((a, b) => a + b, 0) + ", 총 재고보유일: " + earliness.reduce((a, b) => a + b, 0);
-
+            document.getElementById('score').textContent = score_text + "총 납기초과일: " + overdue_date + ", 총 재고보유일: " + hold_date;
+            
         }
     
         make_grid_header() {

@@ -1237,6 +1237,10 @@ var Gantt = (function () {
     
                 // cache index
                 task._index = i;
+
+                if (typeof task.machine_index === 'number') {
+                    task._index = task.machine_index;
+                }
     
                 // invalid dates
                 if (!task.start && !task.end) {

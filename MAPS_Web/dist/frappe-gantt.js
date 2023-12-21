@@ -543,7 +543,6 @@ var Gantt = (function () {
         }
     
         draw() {
-            this.draw_number();
             this.draw_bar();
             this.draw_progress_bar();
             this.draw_label();
@@ -595,17 +594,6 @@ var Gantt = (function () {
             });
             // labels get BBox in the next tick
             requestAnimationFrame(() => this.update_label_position());
-        }
-    
-        // Add grid line number
-        draw_number() {
-            createSVG('text', {
-                x: 15,
-                y: this.y + this.height / 2,
-                innerHTML: this.task.id,
-                class: 'process-num',
-                append_to: this.bar_group
-            });
         }
     
         draw_resize_handles() {
@@ -1452,6 +1440,7 @@ var Gantt = (function () {
             this.make_grid_header();
             this.make_grid_ticks();
             this.make_grid_highlights();
+            this.make_grid_row_number();
         }
     
         make_grid_background() {
@@ -1536,6 +1525,27 @@ var Gantt = (function () {
                 append_to: this.layers.score,
                 id: 'score'
             });
+        }
+
+        // Add line number
+        make_grid_row_number() {
+            const rows_layer = createSVG('g', { append_to: this.layers.grid });
+            const row_height = this.options.bar_height + this.options.padding;
+            let row_y = this.options.header_height + this.options.padding
+
+            var count = 1
+            for (let task of this.tasks) {
+                const line_number = createSVG('text', {
+                    x: 15,
+                    y: row_y*0.6 + count * row_height,
+                    class: 'process-num',
+                    append_to: rows_layer
+                })
+
+                line_number.textContent = count;
+
+                count = count + 1;
+            }
         }
     
         update_score() {

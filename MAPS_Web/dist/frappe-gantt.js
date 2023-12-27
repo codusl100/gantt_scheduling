@@ -1238,7 +1238,7 @@ var Gantt = (function () {
                 custom_popup_html: null,
                 language: 'en',
                 start_date: 'None',
-                sortable: true,
+                drag_y: true,
             };
             this.options = Object.assign({}, default_options, options);
         }
@@ -2055,7 +2055,7 @@ var Gantt = (function () {
                         x:
                             bar_being_dragged.$bar.ox +
                             bar_being_dragged.$bar.finaldx,
-                        y: this.options.sortable ? y : null,
+                        y: this.options.drag_y ? y : null,
                     });
                 }
     
@@ -2091,20 +2091,11 @@ var Gantt = (function () {
 
                 // update y pos
                 if (
-                    this.options.sortable &&
+                    this.options.drag_y &&
                     is_dragging &&
                     Math.abs(dy - bar_being_dragged.$bar.finaldy) >
                         bar_being_dragged.height
-                ) {
-                    this.sort_bars().map((bar) => {
-                        const y = bar.compute_y();
-                        if (bar.task.id === parent_bar_id) {
-                            bar.$bar.finaldy = y - bar.$bar.oy;
-                            return;
-                        }
-                        bar.update_bar_position({ y: y });
-                    });
-                }
+                )
                 
                 bars.forEach(bar => {
                     const $bar = bar.$bar;
@@ -2129,7 +2120,7 @@ var Gantt = (function () {
                         }
                     });
                     const $bar = this.bar_being_dragged.$bar;
-                    if (this.options.sortable && dy !== $bar.finaldy) {
+                    if (this.options.drag_y && dy !== $bar.finaldy) {
                         this.bar_being_dragged.update_bar_position({
                             y: $bar.oy + $bar.finaldy,
                         });

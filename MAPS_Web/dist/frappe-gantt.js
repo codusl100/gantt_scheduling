@@ -814,7 +814,7 @@ var Gantt = (function () {
             // this.update_label_position();
             this.update_handle_position();
             // this.update_progressbar_position();
-            // this.update_arrow_position();
+            this.update_arrow_position();
         }
     
         date_changed() {
@@ -1440,8 +1440,8 @@ var Gantt = (function () {
             this.make_grid();
             this.make_dates();
             this.make_bars();
-            this.make_arrows();
-            this.map_arrows_on_bars();
+            // this.make_arrows();
+            // this.map_arrows_on_bars();
             this.set_width();
             this.set_scroll_position();
             this.update_score();

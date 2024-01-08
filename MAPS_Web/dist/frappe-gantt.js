@@ -803,7 +803,7 @@ var Gantt = (function () {
             }
 
             if (y) {
-                this.update_attr(bar, 'y', y);
+                this.update_attr(bar, 'y', y)
                 this.update_progressbar_position();
                 // add label position
                 this.update_label_position();
@@ -814,7 +814,7 @@ var Gantt = (function () {
             // this.update_label_position();
             this.update_handle_position();
             // this.update_progressbar_position();
-            // this.update_arrow_position();
+            this.update_arrow_position();
         }
     
         date_changed() {
@@ -1238,7 +1238,7 @@ var Gantt = (function () {
                 custom_popup_html: null,
                 language: 'en',
                 start_date: 'None',
-                sortable: true,
+                drag_y: true,
             };
             this.options = Object.assign({}, default_options, options);
         }
@@ -1440,8 +1440,8 @@ var Gantt = (function () {
             this.make_grid();
             this.make_dates();
             this.make_bars();
-            this.make_arrows();
-            this.map_arrows_on_bars();
+            // this.make_arrows();
+            // this.map_arrows_on_bars();
             this.set_width();
             this.set_scroll_position();
             this.update_score();
@@ -1959,11 +1959,9 @@ var Gantt = (function () {
             let bars = []; // instanceof Bar
             this.bar_being_dragged = null;
 
-            const min_y = this.options.header_height;
+            const min_y = this.options.header_height + this.options.padding - 3;
             const max_y =
-                this.options.header_height +
-                this.tasks.length *
-                    (this.options.bar_height + this.options.padding);
+                min_y + (this.tasks.length - 1) * (this.options.bar_height + this.options.padding);
             this.bar_being_dragged = null; // instanceof dragged bar
     
             function action_in_progress() {
@@ -2029,6 +2027,7 @@ var Gantt = (function () {
                 // update the dragged bar
                 const bar_being_dragged = this.bar_being_dragged;
                 bar_being_dragged.$bar.finaldx = this.get_snap_position(dx);
+                bar_being_dragged.$bar.finaldy = this.get_snap_position(dy);
                 if (is_resizing_left) {
                     bar_being_dragged.update_bar_position({
                         x:
@@ -2045,7 +2044,7 @@ var Gantt = (function () {
                             bar_being_dragged.$bar.finaldx,
                     });
                 } else if (is_dragging) {
-                    let y = bar_being_dragged.$bar.oy + dy;
+                    let y = bar_being_dragged.$bar.oy + bar_being_dragged.$bar.finaldy;
                     if (y < min_y) {
                         y = min_y;
                     } else if (y > max_y) {
@@ -2055,7 +2054,7 @@ var Gantt = (function () {
                         x:
                             bar_being_dragged.$bar.ox +
                             bar_being_dragged.$bar.finaldx,
-                        y: this.options.sortable ? y : null,
+                        y: this.options.drag_y ? y : null
                     });
                 }
     
@@ -2088,23 +2087,6 @@ var Gantt = (function () {
                         bar.update_bar_position({ x: $bar.ox + $bar.finaldx });
                     }
                 });
-
-                // update y pos
-                if (
-                    this.options.sortable &&
-                    is_dragging &&
-                    Math.abs(dy - bar_being_dragged.$bar.finaldy) >
-                        bar_being_dragged.height
-                ) {
-                    this.sort_bars().map((bar) => {
-                        const y = bar.compute_y();
-                        if (bar.task.id === parent_bar_id) {
-                            bar.$bar.finaldy = y - bar.$bar.oy;
-                            return;
-                        }
-                        bar.update_bar_position({ y: y });
-                    });
-                }
                 
                 bars.forEach(bar => {
                     const $bar = bar.$bar;
@@ -2129,7 +2111,7 @@ var Gantt = (function () {
                         }
                     });
                     const $bar = this.bar_being_dragged.$bar;
-                    if (this.options.sortable && dy !== $bar.finaldy) {
+                    if (this.options.drag_y && dy !== $bar.finaldy) {
                         this.bar_being_dragged.update_bar_position({
                             y: $bar.oy + $bar.finaldy,
                         });

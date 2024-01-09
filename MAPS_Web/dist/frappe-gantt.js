@@ -2126,6 +2126,10 @@ var Gantt = (function () {
             });
     
             $.on(this.$svg, 'mouseup', e => {
+                if (this.bar_being_dragged.$bar.finaldy % this.options.column_width == 0) {
+                    this.bar_being_dragged.task.machine_index += this.bar_being_dragged.$bar.finaldy / this.options.column_width
+                    console.log(this.bar_being_dragged.task.machine_index)
+                }
                 this.bar_being_dragged = null;
                 bars.forEach(bar => {
                     const $bar = bar.$bar;

@@ -1585,7 +1585,6 @@ var Gantt = (function () {
                 }
                 machine_task[machine_index].push(task);
             })
-            console.log(machine_task)
 
             var tardiness = tasks.map(otask => {
                 return Math.max(0, date_utils.diff(otask._end, otask._due)-1);
@@ -1610,14 +1609,12 @@ var Gantt = (function () {
 
             // machine 별로 비교
             for (let k = 0; k < machine_task.length; k++){
-                console.log(machine_task[k])
                 if (machine_task[k]) {
                     for (let j = 0; j < machine_task[k].length; j++) {
                         var _j = parseInt(machine_task[k][j].id) - 1;
                         for (let i = 0; i < machine_task[k].length; i++) {
                             var _i = parseInt(machine_task[k][i].id) - 1;
                             if (_i != _j) {
-                                console.log(_i, _j)
                                 var start_check = (all_xs[_i]<all_xs[_j]) && (all_xe[_i]>all_xs[_j]);
                                 var end_check = (all_xs[_i]<all_xe[_j]) && (all_xe[_i]>all_xe[_j]);
                                 if (start_check || end_check) {
@@ -2151,7 +2148,6 @@ var Gantt = (function () {
             $.on(this.$svg, 'mouseup', e => {
                 if (this.bar_being_dragged.$bar.finaldy % this.options.column_width == 0) {
                     this.bar_being_dragged.task.machine_index += this.bar_being_dragged.$bar.finaldy / this.options.column_width
-                    console.log(this.bar_being_dragged.task.machine_index)
                 }
                 this.bar_being_dragged = null;
                 bars.forEach(bar => {

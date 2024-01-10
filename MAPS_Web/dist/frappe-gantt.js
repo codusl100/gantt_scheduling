@@ -1574,6 +1574,18 @@ var Gantt = (function () {
         }
     
         update_score() {
+            // machine 별로 작업 나누기
+            var machine_task = [];
+            this.tasks.forEach(task => {
+                const { machine_index, id } = task;
+                
+                if(!machine_task[machine_index]) {
+                    machine_task[machine_index] = [];
+                }
+                machine_task[machine_index].push(task);
+            })
+            console.log(machine_task)
+
             var tardiness = tasks.map(otask => {
                 return Math.max(0, date_utils.diff(otask._end, otask._due)-1);
             });
@@ -1594,15 +1606,25 @@ var Gantt = (function () {
             });
     
             var overlap = false;
-            for (let j = 0; j < all_xs.length; j++){
-                for (let i = 0; i < all_xs.length; i++){
-                    if (i != j) {
-                        var start_check = (all_xs[i]<all_xs[j]) && (all_xe[i]>all_xs[j]);
-                        var end_check = (all_xs[i]<all_xe[j]) && (all_xe[i]>all_xe[j]);
-                        if (start_check || end_check) {
-                            overlap = true;
-                            all_bars[i].classList.add('bar-invalid');
-                            all_bars[j].classList.add('bar-invalid');
+
+            // machine 별로 비교
+            for (let k = 0; k < machine_task.length; k++){
+                console.log(machine_task[k])
+                if (machine_task[k]) {
+                    for (let j = 0; j < machine_task[k].length; j++) {
+                        var _j = parseInt(machine_task[k][j].id) - 1;
+                        for (let i = 0; i < machine_task[k].length; i++) {
+                            var _i = parseInt(machine_task[k][i].id) - 1;
+                            if (_i != _j) {
+                                console.log(_i, _j)
+                                var start_check = (all_xs[_i]<all_xs[_j]) && (all_xe[_i]>all_xs[_j]);
+                                var end_check = (all_xs[_i]<all_xe[_j]) && (all_xe[_i]>all_xe[_j]);
+                                if (start_check || end_check) {
+                                    overlap = true;
+                                    all_bars[_i].classList.add('bar-invalid');
+                                    all_bars[_j].classList.add('bar-invalid');
+                                }
+                            }
                         }
                     }
                 }

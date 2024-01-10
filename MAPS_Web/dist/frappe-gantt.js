@@ -1239,6 +1239,7 @@ var Gantt = (function () {
                 language: 'en',
                 start_date: 'None',
                 drag_y: true,
+                row_num: 4, // machine 수
             };
             this.options = Object.assign({}, default_options, options);
         }
@@ -1500,7 +1501,7 @@ var Gantt = (function () {
     
             let row_y = this.options.header_height + this.options.padding / 2;
     
-            for (let task of this.tasks) {
+            for (let i = 0; i <= this.options.row_num; i++) {
                 const grid_row = createSVG('rect', {
                     x: 0,
                     y: row_y,
@@ -1559,7 +1560,7 @@ var Gantt = (function () {
             let row_y = this.options.header_height + this.options.padding
 
             var count = 1
-            for (let task of this.tasks) {
+            for (let i = 0; i <= this.options.row_num; i++) {
                 const line_number = createSVG('text', {
                     x: 15,
                     y: row_y*0.6 + count * row_height,
@@ -1574,6 +1575,17 @@ var Gantt = (function () {
         }
     
         update_score() {
+            // machine 별로 작업 나누기
+            var machine_task = [];
+            this.tasks.forEach(task => {
+                const { machine_index, id } = task;
+                
+                if(!machine_task[machine_index]) {
+                    machine_task[machine_index] = [];
+                }
+                machine_task[machine_index].push(task);
+            })
+
             var tardiness = tasks.map(otask => {
                 return Math.max(0, date_utils.diff(otask._end, otask._due)-1);
             });
@@ -1594,15 +1606,23 @@ var Gantt = (function () {
             });
     
             var overlap = false;
-            for (let j = 0; j < all_xs.length; j++){
-                for (let i = 0; i < all_xs.length; i++){
-                    if (i != j) {
-                        var start_check = (all_xs[i]<all_xs[j]) && (all_xe[i]>all_xs[j]);
-                        var end_check = (all_xs[i]<all_xe[j]) && (all_xe[i]>all_xe[j]);
-                        if (start_check || end_check) {
-                            overlap = true;
-                            all_bars[i].classList.add('bar-invalid');
-                            all_bars[j].classList.add('bar-invalid');
+
+            // machine 별로 비교
+            for (let k = 0; k < machine_task.length; k++){
+                if (machine_task[k]) {
+                    for (let j = 0; j < machine_task[k].length; j++) {
+                        var _j = parseInt(machine_task[k][j].id) - 1;
+                        for (let i = 0; i < machine_task[k].length; i++) {
+                            var _i = parseInt(machine_task[k][i].id) - 1;
+                            if (_i != _j) {
+                                var start_check = (all_xs[_i]<all_xs[_j]) && (all_xe[_i]>all_xs[_j]);
+                                var end_check = (all_xs[_i]<all_xe[_j]) && (all_xe[_i]>all_xe[_j]);
+                                if (start_check || end_check) {
+                                    overlap = true;
+                                    all_bars[_i].classList.add('bar-invalid');
+                                    all_bars[_j].classList.add('bar-invalid');
+                                }
+                            }
                         }
                     }
                 }
@@ -1660,7 +1680,7 @@ var Gantt = (function () {
             let tick_y = this.options.header_height + this.options.padding / 2;
             let tick_height =
                 (this.options.bar_height + this.options.padding) *
-                this.tasks.length;
+                this.options.row_num;
     
             for (let date of this.dates) {
                 let tick_class = 'tick';
@@ -2126,6 +2146,9 @@ var Gantt = (function () {
             });
     
             $.on(this.$svg, 'mouseup', e => {
+                if (this.bar_being_dragged.$bar.finaldy % this.options.column_width == 0) {
+                    this.bar_being_dragged.task.machine_index += this.bar_being_dragged.$bar.finaldy / this.options.column_width
+                }
                 this.bar_being_dragged = null;
                 bars.forEach(bar => {
                     const $bar = bar.$bar;

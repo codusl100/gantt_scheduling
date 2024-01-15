@@ -1475,7 +1475,7 @@ var Gantt = (function () {
                 this.options.header_height +
                 this.options.padding +
                 (this.options.bar_height + this.options.padding) *
-                    this.tasks.length;
+                    this.options.row_num;
     
             createSVG('rect', {
                 x: 0,

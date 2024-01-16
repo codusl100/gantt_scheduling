@@ -1727,10 +1727,12 @@ var Gantt = (function () {
                     this.options.step *
                     this.options.column_width;
                 const y = this.options.header_height +
-                this.options.padding / 2 + (this.options.bar_height + this.options.padding) * (task._index);
+                this.options.padding / 2;
     
                 const width = this.options.column_width;
-                const height = this.options.bar_height * 2;
+                const height = (this.options.bar_height + this.options.padding) *
+                    this.options.row_num;
+                    console.log(task, height)
     
                 createSVG('rect', {
                     x,
@@ -1738,6 +1740,7 @@ var Gantt = (function () {
                     width,
                     height,
                     class: 'due-highlight',
+                    id: 'due-'+task.id,
                     append_to: this.layers.grid
                 });
             });

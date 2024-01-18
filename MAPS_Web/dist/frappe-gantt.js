@@ -1732,7 +1732,6 @@ var Gantt = (function () {
                 const width = this.options.column_width;
                 const height = (this.options.bar_height + this.options.padding) *
                     this.options.row_num;
-                    console.log(task, height)
     
                 createSVG('rect', {
                     x,

@@ -39,7 +39,7 @@
     stroke-width: 0.4; }
 
 .gantt .due-highlight {
-  fill: #e78080;
+  /* fill: #e78080; */
   opacity: 0.3; }
 
 .gantt .arrow {
@@ -61,38 +61,36 @@
   fill: #a3a3ff; 
   height: 26px; }
 
-.TASK1 g rect {
-  fill : #f4e116 !important;
-  height: 26px;
+.TASK1 g rect, #due-1 {
+  fill : #0041b1 !important;
 }
 
-.TASK2 g rect {
-  fill : #37bcc8 !important;
+.TASK2 g rect, #due-2 {
+  fill : #e69e00 !important;
 }
 
-.TASK3 g rect {
-  fill : #4dd356 !important;
+.TASK3 g rect, #due-3 {
+  fill : #15aad3 !important;
 }
 
-.TASK4 g rect {
-  fill : #d67bd0 !important;
-  height: 26px;
+.TASK4 g rect, #due-4 {
+  fill : #8861bb !important;
 }
 
-.TASK5 g rect {
-  fill : #9090f1 !important;
+.TASK5 g rect, #due-5 {
+  fill : #007c88 !important;
 }
 
-.TASK6 g rect {
-  fill : #f1af90 !important;
+.TASK6 g rect, #due-6 {
+  fill : #382386 !important;
 }
 
-.TASK7 g rect {
-  fill : #46D2D2 !important;
+.TASK7 g rect, #due-7 {
+  fill : #ddd77c !important;
 }
 
-.TASK8 g rect {
-  fill : #A390EE !important;
+.TASK8 g rect, #due-8 {
+  fill : #b10015 !important;
 }
 
 .gantt .bar-invalid {

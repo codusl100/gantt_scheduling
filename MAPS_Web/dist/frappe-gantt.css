@@ -62,35 +62,35 @@
   height: 26px; }
 
 .TASK1 g rect, #due-1 {
-  fill : #f4e116 !important;
+  fill : #0041b1 !important;
 }
 
 .TASK2 g rect, #due-2 {
-  fill : #37bcc8 !important;
+  fill : #e69e00 !important;
 }
 
 .TASK3 g rect, #due-3 {
-  fill : #4dd356 !important;
+  fill : #15aad3 !important;
 }
 
 .TASK4 g rect, #due-4 {
-  fill : #d67bd0 !important;
+  fill : #8861bb !important;
 }
 
 .TASK5 g rect, #due-5 {
-  fill : #9090f1 !important;
+  fill : #007c88 !important;
 }
 
 .TASK6 g rect, #due-6 {
-  fill : #f1af90 !important;
+  fill : #382386 !important;
 }
 
 .TASK7 g rect, #due-7 {
-  fill : #46D2D2 !important;
+  fill : #ddd77c !important;
 }
 
 .TASK8 g rect, #due-8 {
-  fill : #A390EE !important;
+  fill : #b10015 !important;
 }
 
 .gantt .bar-invalid {

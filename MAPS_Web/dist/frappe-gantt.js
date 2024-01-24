@@ -1723,8 +1723,8 @@ var Gantt = (function () {
             
             this.tasks.forEach(task => {
                 const x =
-                    date_utils.diff(task._due, this.gantt_start, 'hour') /
-                    this.options.step *
+                    ( date_utils.diff(task._due, this.gantt_start, 'hour') /
+                    this.options.step + 1) *
                     this.options.column_width;
                 const y = this.options.header_height +
                 this.options.padding / 2;
@@ -1736,7 +1736,7 @@ var Gantt = (function () {
                 createSVG('rect', {
                     x,
                     y,
-                    width,
+                    width: 2,
                     height,
                     class: 'due-highlight',
                     id: 'due-'+task.id,

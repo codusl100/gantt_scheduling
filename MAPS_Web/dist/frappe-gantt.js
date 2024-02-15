@@ -765,11 +765,11 @@ var Gantt = (function () {
                });
     
                var overlap = false;
-               for (let i = 0; i < all_xs.length; i++){
-                var start_check = (all_xs[i]<x) && (all_xe[i]>x);
-                var end_check = (all_xs[i]<x+bar.getWidth()) && (all_xe[i]>x+bar.getWidth());
-                if (start_check || end_check) overlap = true;
-               }
+            //    for (let i = 0; i < all_xs.length; i++){
+            //     var start_check = (all_xs[i]<x) && (all_xe[i]>x);
+            //     var end_check = (all_xs[i]<x+bar.getWidth()) && (all_xe[i]>x+bar.getWidth());
+            //     if (start_check || end_check) overlap = true;
+            //    }
                for (let i = 0; i < all_xs.length; i++){
                 if (all_xs[i] <= x && all_xe[i] >= x+bar.getWidth()) overlap = true;
                }

@@ -1239,7 +1239,7 @@ var Gantt = (function () {
                 language: 'en',
                 start_date: 'None',
                 drag_y: true,
-                row_num: 4, // machine 수
+                row_num: 3, // machine 수
             };
             this.options = Object.assign({}, default_options, options);
         }
@@ -1501,7 +1501,7 @@ var Gantt = (function () {
     
             let row_y = this.options.header_height + this.options.padding / 2;
     
-            for (let i = 0; i <= this.options.row_num; i++) {
+            for (let i = 0; i < this.options.row_num; i++) {
                 const grid_row = createSVG('rect', {
                     x: 0,
                     y: row_y,
@@ -1560,7 +1560,7 @@ var Gantt = (function () {
             let row_y = this.options.header_height + this.options.padding
 
             var count = 1
-            for (let i = 0; i <= this.options.row_num; i++) {
+            for (let i = 0; i < this.options.row_num; i++) {
                 const line_number = createSVG('text', {
                     x: 15,
                     y: row_y*0.6 + count * row_height,

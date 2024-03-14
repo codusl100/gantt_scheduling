@@ -779,10 +779,10 @@ var Gantt = (function () {
                     return;
                 }
                 // [SJUN] TODO: if possible, suggest another position
-                if (overlap) {
-                    width = null;
-                    return;
-                }
+                // if (overlap) {
+                //     width = null;
+                //     return;
+                // }
                 this.update_attr(bar, 'x', x);
                 // add bar_progress position
                 this.update_attr(bar_progress, 'x', x);
